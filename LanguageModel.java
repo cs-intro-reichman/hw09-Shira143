@@ -32,15 +32,14 @@ public class LanguageModel {
     }
 
 	public void train(String fileName) {
-    In in = new In(fileName);
+   In in = new In(fileName);
     StringBuilder sb = new StringBuilder();
-    
     while (!in.isEmpty()) {
         sb.append(in.readChar());
     }
     String content = sb.toString();
-    
-    for (int i = 0; i <= content.length() - windowLength - 1; i++) {
+
+    for (int i = 0; i < content.length() - windowLength; i++) {
         String window = content.substring(i, i + windowLength);
         char nextChar = content.charAt(i + windowLength);
 
