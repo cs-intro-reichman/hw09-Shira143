@@ -32,13 +32,9 @@ public class LanguageModel {
     }
 
 	public void train(String fileName) {
-   In in = new In(fileName);
-    StringBuilder sb = new StringBuilder();
-    while (!in.isEmpty()) {
-        sb.append(in.readChar());
-    }
-    String content = sb.toString();
-
+  In in = new In(fileName);
+    String content = in.readAll(); 
+    
     for (int i = 0; i < content.length() - windowLength; i++) {
         String window = content.substring(i, i + windowLength);
         char nextChar = content.charAt(i + windowLength);
@@ -54,6 +50,7 @@ public class LanguageModel {
     for (List list : CharDataMap.values()) {
         calculateProbabilities(list);
     }
+    
 }
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */

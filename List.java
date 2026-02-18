@@ -83,7 +83,7 @@ public class List {
     while (curr != null) {
         if (curr.cp.chr == chr) {
             curr.cp.count++;
-            return;
+            return; 
         }
         prev = curr;
         curr = curr.next;
