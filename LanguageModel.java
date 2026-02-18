@@ -33,22 +33,27 @@ public class LanguageModel {
 
 	public void train(String fileName) {
     In in = new In(fileName);
-    String content = in.readAll(); 
-
-    for (int i = 0; i <= content.length() - windowLength - 1; i++) {
-        String window = content.substring(i, i + windowLength);
-        char nextChar = content.charAt(i + windowLength);
-
-        List probs = CharDataMap.get(window);
-        if (probs == null) {
-            probs = new List();
-            CharDataMap.put(window, probs);
+        StringBuilder contentBuilder = new StringBuilder();
+        while (!in.isEmpty()) {
+            contentBuilder.append(in.readChar());
         }
-        probs.update(nextChar);
-    }
-    for (List list : CharDataMap.values()) {
-        calculateProbabilities(list);
-    }
+        String content = contentBuilder.toString();
+
+        for (int i = 0; i <= content.length() - windowLength - 1; i++) {
+            String window = content.substring(i, i + windowLength);
+            char nextChar = content.charAt(i + windowLength);
+
+            List probs = CharDataMap.get(window);
+            if (probs == null) {
+                probs = new List();
+                CharDataMap.put(window, probs);
+            }
+            probs.update(nextChar);
+        }
+
+        for (List list : CharDataMap.values()) {
+            calculateProbabilities(list);
+        }
 }
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
@@ -78,12 +83,11 @@ public class LanguageModel {
      if (initialText.length() < windowLength) {
         return initialText;
     }
-    
+
     StringBuilder generatedText = new StringBuilder(initialText);
 
     while (generatedText.length() < textLength) {
-        int start = generatedText.length() - windowLength;
-        String window = generatedText.substring(start);
+        String window = generatedText.substring(generatedText.length() - windowLength);
         
         List probs = CharDataMap.get(window);
         
