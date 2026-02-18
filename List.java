@@ -78,26 +78,26 @@ public class List {
      *  given chr to the beginning of this list. */
     public void update(char chr) {
 Node curr = first;
-    Node prev = null;
-    
-    while (curr != null) {
-        if (curr.cp.chr == chr) {
-            curr.cp.count++; 
-            return;         
+        Node prev = null;
+        
+        while (curr != null) {
+            if (curr.cp.chr == chr) {
+                curr.cp.count++; 
+                return;          
+            }
+            prev = curr;
+            curr = curr.next;
         }
-        prev = curr;
-        curr = curr.next;
-    }
-    
-    CharData newData = new CharData(chr);
-    Node newNode = new Node(newData);
-    
-    if (first == null) {
-        first = newNode;
-    } else {
-        prev.next = newNode; 
-    }
-    size++;
+        
+        CharData newData = new CharData(chr);
+        Node newNode = new Node(newData);
+        
+        if (first == null) {
+            first = newNode; 
+        } else {
+            prev.next = newNode; 
+        }
+        size++;
        }
 
     /** GIVE If the given character exists in one of the CharData objects
