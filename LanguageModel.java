@@ -33,27 +33,28 @@ public class LanguageModel {
 
 	public void train(String fileName) {
     In in = new In(fileName);
-        StringBuilder contentBuilder = new StringBuilder();
-        while (!in.isEmpty()) {
-            contentBuilder.append(in.readChar());
-        }
-        String content = contentBuilder.toString();
+    StringBuilder sb = new StringBuilder();
+    
+    while (!in.isEmpty()) {
+        sb.append(in.readChar());
+    }
+    String content = sb.toString();
+    
+    for (int i = 0; i <= content.length() - windowLength - 1; i++) {
+        String window = content.substring(i, i + windowLength);
+        char nextChar = content.charAt(i + windowLength);
 
-        for (int i = 0; i <= content.length() - windowLength - 1; i++) {
-            String window = content.substring(i, i + windowLength);
-            char nextChar = content.charAt(i + windowLength);
-
-            List probs = CharDataMap.get(window);
-            if (probs == null) {
-                probs = new List();
-                CharDataMap.put(window, probs);
-            }
-            probs.update(nextChar);
+        List probs = CharDataMap.get(window);
+        if (probs == null) {
+            probs = new List();
+            CharDataMap.put(window, probs);
         }
+        probs.update(nextChar);
+    }
 
-        for (List list : CharDataMap.values()) {
-            calculateProbabilities(list);
-        }
+    for (List list : CharDataMap.values()) {
+        calculateProbabilities(list);
+    }
 }
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
@@ -80,12 +81,10 @@ public class LanguageModel {
         return probs.get(probs.getSize()-1).chr;
 	}
 	public String generate(String initialText, int textLength) {
-     if (initialText.length() < windowLength) {
+  if (initialText.length() < windowLength) {
         return initialText;
     }
-
     StringBuilder generatedText = new StringBuilder(initialText);
-
     while (generatedText.length() < textLength) {
         String window = generatedText.substring(generatedText.length() - windowLength);
         
