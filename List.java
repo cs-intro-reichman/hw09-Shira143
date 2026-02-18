@@ -77,7 +77,7 @@ public class List {
      *  increments its counter. Otherwise, adds a new CharData object with the
      *  given chr to the beginning of this list. */
     public void update(char chr) {
-  Node curr = first;
+Node curr = first;
     Node prev = null;
     
     while (curr != null) {
@@ -95,7 +95,7 @@ public class List {
     if (first == null) {
         first = newNode;
     } else {
-        prev.next = newNode;
+        prev.next = newNode; 
     }
     size++;
        }
