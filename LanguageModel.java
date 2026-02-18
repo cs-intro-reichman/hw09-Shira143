@@ -30,25 +30,34 @@ public class LanguageModel {
 
     /** Builds a language model from the text in the given file (the corpus). */
     public void train(String fileName) {
-        In in = new In(fileName);
-        String content = in.readAll(); 
-        
-        for (int i = 0; i < content.length() - windowLength; i++) {
-            String window = content.substring(i, i + windowLength);
-            char nextChar = content.charAt(i + windowLength);
 
-            List probs = CharDataMap.get(window);
-            if (probs == null) {
-                probs = new List();
-                CharDataMap.put(window, probs);
-            }
-            probs.update(nextChar); 
-        }
+    String window = "";
+    char c;
+    In in = new In(fileName);
 
-        for (List list : CharDataMap.values()) {
-            calculateProbabilities(list);
-        }
+    while ((!in.isEmpty()) && (window.length() < windowLength)) {
+        c = in.readChar();
+        window += c;
     }
+
+    while (!in.isEmpty()) {
+        c = in.readChar();
+        
+        List probs = CharDataMap.get(window);
+        if (probs == null) {
+            probs = new List();
+            CharDataMap.put(window, probs);
+        }
+        probs.update(c);
+
+        window += c;
+        window = window.substring(1, window.length());
+    }
+
+    for (List probs : CharDataMap.values())
+        calculateProbabilities(probs);
+}
+    
 
     /** Computes and sets the probabilities (p and cp fields) of all the
      * characters in the given list. */
@@ -81,29 +90,25 @@ public class LanguageModel {
 
 
     /** Generates a random text, based on the probabilities that were learned during training. */
-    public String generate(String initialText, int textLength) {
-        if (initialText.length() < windowLength) {
-            return initialText;
-        }
-        
-        StringBuilder generatedText = new StringBuilder(initialText);
-        
-        while (generatedText.length() < textLength) {
-            String window = generatedText.substring(generatedText.length() - windowLength);
-            
-            List probs = CharDataMap.get(window);
-     
-            if (probs == null) {
-                break; 
-            }
-            
-            char nextChar = getRandomChar(probs);
-            generatedText.append(nextChar);
-        }
-        
-        return generatedText.toString();
+   public String generate(String initialText, int textLength) {
+    if (initialText.length() < windowLength) {
+        return initialText;
     }
-
+    String generatedText = initialText; 
+    for (int i = 0; i < textLength; i++) {
+        String window = generatedText.substring(generatedText.length() - windowLength);
+        
+        List probs = CharDataMap.get(window);
+        if (probs == null) {
+            return generatedText; 
+        }
+        
+        char nextChar = getRandomChar(probs);
+        generatedText += nextChar;
+    }
+    
+    return generatedText;
+}
     public String toString() {
         StringBuilder str = new StringBuilder();
         for (String key : CharDataMap.keySet()) {

@@ -65,32 +65,18 @@ public class List {
      * 1. Updates count if char exists (and returns immediately).
      * 2. Adds new char to the END of the list (Fixes probability order).
      */
-    public void update(char chr) {
-        Node current = first;
-        while (current != null) {
-            if (current.cp.chr == chr) {
-                current.cp.count++;
-                return; 
-            }
-            current = current.next;
-        }
 
-        CharData newData = new CharData(chr);
-        Node newNode = new Node(newData);
+public void update(char chr) {
 
-        if (first == null) {
-          
-            first = newNode;
-        } else {
-           
-            Node last = first;
-            while (last.next != null) {
-                last = last.next;
-            }
-            last.next = newNode;
-        }
-        size++;
+    int index = indexOf(chr);
+    
+    if (index == -1) {
+        addFirst(chr);
+    } else {
+        CharData data = get(index);
+        data.count++;
     }
+}
 
     /** GIVE If the given character exists... removes it. */
     public boolean remove(char chr) {
